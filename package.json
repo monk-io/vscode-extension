@@ -2,7 +2,7 @@
     "name": "monk-yaml",
     "displayName": "Monk YAML",
     "description": "YAML used for monk kits",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.60.0"
     },
@@ -10,6 +10,7 @@
         "Programming Languages"
     ],
     "publisher": "AnotherTest",
+    "repository": "https://github.com/monk-io/vscode-extension",
     "contributes": {
         "languages": [{
             "id": "monk-yaml",
