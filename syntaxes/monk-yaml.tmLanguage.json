@@ -647,24 +647,19 @@
               "name": "constant.character.escape.monkyaml"
             },
             {
-              "begin": "\\$\\{",
-              "end": "\\}",
-              "beginCaptures": {
-                "0": {
+              "match": "(\\$\\{)([a-zA-Z_?][\\w?-]*)(\\})",
+              "captures": {
+                "1": {
                   "name": "punctuation.definition.template-expression.begin.monkyaml"
-                }
-              },
-              "endCaptures": {
-                "0": {
+                },
+                "2": {
+                  "name": "variable.name.arrowscript.monkyaml"
+                },
+                "3": {
                   "name": "punctuation.definition.template-expression.end.monkyaml"
                 }
               },
-              "patterns": [
-                {
-                  "include": "#arrowscript-code-inner"
-                }
-              ],
-              "name": "variable.other.placeholder.monkyaml"
+              "name": "meta.template-expression.monkyaml"
             },
             {
               "match": ".",
