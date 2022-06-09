@@ -1,0 +1,711 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "version": "https://github.com/textmate/yaml.tmbundle/commit/e54ceae3b719506dba7e481a77cea4a8b576ae46",
+  "name": "Monk YAML",
+  "scopeName": "source.monkyaml",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#property"
+    },
+    {
+      "include": "#directive"
+    },
+    {
+      "match": "^---",
+      "name": "entity.other.document.begin.monkyaml"
+    },
+    {
+      "match": "^\\.{3}",
+      "name": "entity.other.document.end.monkyaml"
+    },
+    {
+      "include": "#node"
+    }
+  ],
+  "repository": {
+    "block-collection": {
+      "patterns": [
+        {
+          "include": "#block-sequence"
+        },
+        {
+          "include": "#block-mapping"
+        }
+      ]
+    },
+    "block-mapping": {
+      "patterns": [
+        {
+          "include": "#block-pair"
+        }
+      ]
+    },
+    "block-node": {
+      "patterns": [
+        {
+          "include": "#prototype"
+        },
+        {
+          "include": "#block-scalar"
+        },
+        {
+          "include": "#block-arrowscript"
+        },
+        {
+          "include": "#block-collection"
+        },
+        {
+          "include": "#flow-scalar-plain-out"
+        },
+        {
+          "include": "#flow-node"
+        }
+      ]
+    },
+    "block-pair": {
+      "patterns": [
+        {
+          "begin": "\\?",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.key-value.begin.monkyaml"
+            }
+          },
+          "end": "(?=\\?)|^ *(:)|(:)",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.separator.key-value.mapping.monkyaml"
+            },
+            "2": {
+              "name": "invalid.illegal.expected-newline.monkyaml"
+            }
+          },
+          "name": "meta.block-mapping.monkyaml",
+          "patterns": [
+            {
+              "include": "#block-node"
+            }
+          ]
+        },
+        {
+          "begin": "(?x)\n                        (?=\n                            (?x:\n                                  [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                                | [?:-] \\S\n                            )\n                            (\n                                  [^\\s:]\n                                | : \\S\n                                | \\s+ (?![#\\s])\n                            )*\n                            \\s*\n                            :\n\t\t\t\t\t\t\t(\\s|$)\n                        )\n                    ",
+          "end": "(?x)\n                        (?=\n                              \\s* $\n                            | \\s+ \\#\n                            | \\s* : (\\s|$)\n                        )\n                    ",
+          "patterns": [
+            {
+              "include": "#flow-scalar-plain-out-implicit-type"
+            },
+            {
+              "begin": "(?x)\n                                  [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                                | [?:-] \\S\n                            ",
+              "beginCaptures": {
+                "0": {
+                  "name": "entity.name.tag.monkyaml"
+                }
+              },
+              "contentName": "entity.name.tag.monkyaml",
+              "end": "(?x)\n                                (?=\n                                      \\s* $\n                                    | \\s+ \\#\n                                    | \\s* : (\\s|$)\n                                )\n                            ",
+              "name": "string.unquoted.plain.out.monkyaml"
+            }
+          ]
+        },
+        {
+          "match": ":(?=\\s|$)",
+          "name": "punctuation.separator.key-value.mapping.monkyaml"
+        }
+      ]
+    },
+    "block-arrowscript": {
+      "begin": "<-",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.control.flow.block-scalar.arrowscript.monkyaml"
+        }
+      },
+      "end": "$|\\Z",
+      "patterns": [
+        {
+          "include": "#arrowscript-code-inner"
+        }
+      ]
+    },
+    "block-scalar": {
+      "begin": "(?:(\\|)|(>))([1-9])?([-+])?(.*\\n?)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.flow.block-scalar.literal.monkyaml"
+        },
+        "2": {
+          "name": "keyword.control.flow.block-scalar.folded.monkyaml"
+        },
+        "3": {
+          "name": "constant.numeric.indentation-indicator.monkyaml"
+        },
+        "4": {
+          "name": "storage.modifier.chomping-indicator.monkyaml"
+        },
+        "5": {
+          "patterns": [
+            {
+              "include": "#comment"
+            },
+            {
+              "match": ".+",
+              "name": "invalid.illegal.expected-comment-or-newline.monkyaml"
+            }
+          ]
+        }
+      },
+      "end": "^(?=\\S)|(?!\\G)",
+      "patterns": [
+        {
+          "begin": "^([ ]+)(?! )",
+          "end": "^(?!\\1|\\s*$)",
+          "name": "string.unquoted.block.monkyaml"
+        }
+      ]
+    },
+    "block-sequence": {
+      "match": "(-)(?!\\S)",
+      "name": "punctuation.definition.block.sequence.item.monkyaml"
+    },
+    "comment": {
+      "begin": "(?:(^[ \\t]*)|[ \\t]+)(?=#\\p{Print}*$)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.whitespace.comment.leading.monkyaml"
+        }
+      },
+      "end": "(?!\\G)",
+      "patterns": [
+        {
+          "begin": "#",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.monkyaml"
+            }
+          },
+          "end": "\\n",
+          "name": "comment.line.number-sign.monkyaml"
+        }
+      ]
+    },
+    "directive": {
+      "begin": "^%",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.directive.begin.monkyaml"
+        }
+      },
+      "end": "(?=$|[ \\t]+($|#))",
+      "name": "meta.directive.monkyaml",
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.other.directive.monkyaml.monkyaml"
+            },
+            "2": {
+              "name": "constant.numeric.monkyaml-version.monkyaml"
+            }
+          },
+          "match": "\\G(YAML)[ \\t]+(\\d+\\.\\d+)"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.other.directive.tag.monkyaml"
+            },
+            "2": {
+              "name": "storage.type.tag-handle.monkyaml"
+            },
+            "3": {
+              "name": "support.type.tag-prefix.monkyaml"
+            }
+          },
+          "match": "(?x)\n                        \\G\n                        (TAG)\n                        (?:[ \\t]+\n                            ((?:!(?:[0-9A-Za-z\\-]*!)?))\n                            (?:[ \\t]+ (\n                                  !              (?x: %[0-9A-Fa-f]{2} | [0-9A-Za-z\\-#;/?:@&=+$,_.!~*'()\\[\\]] )*\n                                | (?![,!\\[\\]{}]) (?x: %[0-9A-Fa-f]{2} | [0-9A-Za-z\\-#;/?:@&=+$,_.!~*'()\\[\\]] )+\n                                )\n                            )?\n                        )?\n                    "
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "support.other.directive.reserved.monkyaml"
+            },
+            "2": {
+              "name": "string.unquoted.directive-name.monkyaml"
+            },
+            "3": {
+              "name": "string.unquoted.directive-parameter.monkyaml"
+            }
+          },
+          "match": "(?x) \\G (\\w+) (?:[ \\t]+ (\\w+) (?:[ \\t]+ (\\w+))? )?"
+        },
+        {
+          "match": "\\S+",
+          "name": "invalid.illegal.unrecognized.monkyaml"
+        }
+      ]
+    },
+    "flow-alias": {
+      "captures": {
+        "1": {
+          "name": "keyword.control.flow.alias.monkyaml"
+        },
+        "2": {
+          "name": "punctuation.definition.alias.monkyaml"
+        },
+        "3": {
+          "name": "variable.other.alias.monkyaml"
+        },
+        "4": {
+          "name": "invalid.illegal.character.anchor.monkyaml"
+        }
+      },
+      "match": "((\\*))([^\\s\\[\\]/{/},]+)([^\\s\\]},]\\S*)?"
+    },
+    "flow-collection": {
+      "patterns": [
+        {
+          "include": "#flow-sequence"
+        },
+        {
+          "include": "#flow-mapping"
+        }
+      ]
+    },
+    "flow-mapping": {
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.mapping.begin.monkyaml"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.mapping.end.monkyaml"
+        }
+      },
+      "name": "meta.flow-mapping.monkyaml",
+      "patterns": [
+        {
+          "include": "#prototype"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.mapping.monkyaml"
+        },
+        {
+          "include": "#flow-pair"
+        }
+      ]
+    },
+    "flow-node": {
+      "patterns": [
+        {
+          "include": "#prototype"
+        },
+        {
+          "include": "#flow-alias"
+        },
+        {
+          "include": "#flow-collection"
+        },
+        {
+          "include": "#flow-scalar"
+        }
+      ]
+    },
+    "flow-pair": {
+      "patterns": [
+        {
+          "begin": "\\?",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.key-value.begin.monkyaml"
+            }
+          },
+          "end": "(?=[},\\]])",
+          "name": "meta.flow-pair.explicit.monkyaml",
+          "patterns": [
+            {
+              "include": "#prototype"
+            },
+            {
+              "include": "#flow-pair"
+            },
+            {
+              "include": "#flow-node"
+            },
+            {
+              "begin": ":(?=\\s|$|[\\[\\]{},])",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.separator.key-value.mapping.monkyaml"
+                }
+              },
+              "end": "(?=[},\\]])",
+              "patterns": [
+                {
+                  "include": "#flow-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "begin": "(?x)\n                        (?=\n                            (?:\n                                [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                              | [?:-] [^\\s[\\[\\]{},]]\n                            )\n                            (\n                                  [^\\s:[\\[\\]{},]]\n                                | : [^\\s[\\[\\]{},]]\n                                | \\s+ (?![#\\s])\n                            )*\n                            \\s*\n                            :\n\t\t\t\t\t\t\t(\\s|$)\n                        )\n                    ",
+          "end": "(?x)\n                        (?=\n                              \\s* $\n                            | \\s+ \\#\n                            | \\s* : (\\s|$)\n                            | \\s* : [\\[\\]{},]\n                            | \\s* [\\[\\]{},]\n                        )\n                    ",
+          "name": "meta.flow-pair.key.monkyaml",
+          "patterns": [
+            {
+              "include": "#flow-scalar-plain-in-implicit-type"
+            },
+            {
+              "begin": "(?x)\n                                  [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                                | [?:-] [^\\s[\\[\\]{},]]\n                            ",
+              "beginCaptures": {
+                "0": {
+                  "name": "entity.name.tag.monkyaml"
+                }
+              },
+              "contentName": "entity.name.tag.monkyaml",
+              "end": "(?x)\n                                (?=\n                                      \\s* $\n                                    | \\s+ \\#\n                                    | \\s* : (\\s|$)\n                                    | \\s* : [\\[\\]{},]\n                                    | \\s* [\\[\\]{},]\n                                )\n                            ",
+              "name": "string.unquoted.plain.in.monkyaml"
+            }
+          ]
+        },
+        {
+          "include": "#flow-node"
+        },
+        {
+          "begin": ":(?=\\s|$|[\\[\\]{},])",
+          "captures": {
+            "0": {
+              "name": "punctuation.separator.key-value.mapping.monkyaml"
+            }
+          },
+          "end": "(?=[},\\]])",
+          "name": "meta.flow-pair.monkyaml",
+          "patterns": [
+            {
+              "include": "#flow-value"
+            }
+          ]
+        }
+      ]
+    },
+    "flow-scalar": {
+      "patterns": [
+        {
+          "include": "#flow-scalar-double-quoted"
+        },
+        {
+          "include": "#flow-scalar-single-quoted"
+        },
+        {
+          "include": "#flow-scalar-plain-in"
+        }
+      ]
+    },
+    "flow-scalar-double-quoted": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.monkyaml"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.monkyaml"
+        }
+      },
+      "name": "string.quoted.double.monkyaml",
+      "patterns": [
+        {
+          "match": "\\\\([0abtnvfre \"/\\\\N_Lp]|x\\d\\d|u\\d{4}|U\\d{8})",
+          "name": "constant.character.escape.monkyaml"
+        },
+        {
+          "match": "\\\\\\n",
+          "name": "constant.character.escape.double-quoted.newline.monkyaml"
+        }
+      ]
+    },
+    "flow-scalar-plain-in": {
+      "patterns": [
+        {
+          "include": "#flow-scalar-plain-in-implicit-type"
+        },
+        {
+          "begin": "(?x)\n                          [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                        | [?:-] [^\\s[\\[\\]{},]]\n                    ",
+          "end": "(?x)\n                        (?=\n                              \\s* $\n                            | \\s+ \\#\n                            | \\s* : (\\s|$)\n                            | \\s* : [\\[\\]{},]\n                            | \\s* [\\[\\]{},]\n                        )\n                    ",
+          "name": "string.unquoted.plain.in.monkyaml"
+        }
+      ]
+    },
+    "flow-scalar-plain-in-implicit-type": {
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "constant.language.null.monkyaml"
+            },
+            "2": {
+              "name": "constant.language.boolean.monkyaml"
+            },
+            "3": {
+              "name": "constant.numeric.integer.monkyaml"
+            },
+            "4": {
+              "name": "constant.numeric.float.monkyaml"
+            },
+            "5": {
+              "name": "constant.other.timestamp.monkyaml"
+            },
+            "6": {
+              "name": "constant.language.value.monkyaml"
+            },
+            "7": {
+              "name": "constant.language.merge.monkyaml"
+            }
+          },
+          "match": "(?x)\n                        (?x:\n                              (null|Null|NULL|~)\n                            | (y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)\n                            | (\n                                (?:\n                                      [-+]? 0b [0-1_]+ # (base 2)\n                                    | [-+]? 0  [0-7_]+ # (base 8)\n                                    | [-+]? (?: 0|[1-9][0-9_]*) # (base 10)\n                                    | [-+]? 0x [0-9a-fA-F_]+ # (base 16)\n                                    | [-+]? [1-9] [0-9_]* (?: :[0-5]?[0-9])+ # (base 60)\n                                )\n                              )\n                            | (\n                                (?x:\n                                      [-+]? (?: [0-9] [0-9_]*)? \\. [0-9.]* (?: [eE] [-+] [0-9]+)? # (base 10)\n                                    | [-+]? [0-9] [0-9_]* (?: :[0-5]?[0-9])+ \\. [0-9_]* # (base 60)\n                                    | [-+]? \\. (?: inf|Inf|INF) # (infinity)\n                                    |       \\. (?: nan|NaN|NAN) # (not a number)\n                                )\n                              )\n                            | (\n                                (?x:\n                                    \\d{4} - \\d{2} - \\d{2}           # (y-m-d)\n                                  | \\d{4}                           # (year)\n                                    - \\d{1,2}                       # (month)\n                                    - \\d{1,2}                       # (day)\n                                    (?: [Tt] | [ \\t]+) \\d{1,2}      # (hour)\n                                    : \\d{2}                         # (minute)\n                                    : \\d{2}                         # (second)\n                                    (?: \\.\\d*)?                     # (fraction)\n                                    (?:\n                                          (?:[ \\t]*) Z\n                                        | [-+] \\d{1,2} (?: :\\d{1,2})?\n                                    )?                              # (time zone)\n                                )\n                              )\n                            | (=)\n                            | (<<)\n                        )\n                        (?:\n                            (?=\n                                  \\s* $\n                                | \\s+ \\#\n                                | \\s* : (\\s|$)\n                                | \\s* : [\\[\\]{},]\n                                | \\s* [\\[\\]{},]\n                            )\n                        )\n                    "
+        }
+      ]
+    },
+    "flow-scalar-plain-out": {
+      "patterns": [
+        {
+          "include": "#flow-scalar-plain-out-implicit-type"
+        },
+        {
+          "begin": "(?x)\n                          [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                        | [?:-] \\S\n                    ",
+          "end": "(?x)\n                        (?=\n                              \\s* $\n                            | \\s+ \\#\n                            | \\s* : (\\s|$)\n                        )\n                    ",
+          "name": "string.unquoted.plain.out.monkyaml"
+        }
+      ]
+    },
+    "flow-scalar-plain-out-implicit-type": {
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "constant.language.null.monkyaml"
+            },
+            "2": {
+              "name": "constant.language.boolean.monkyaml"
+            },
+            "3": {
+              "name": "constant.numeric.integer.monkyaml"
+            },
+            "4": {
+              "name": "constant.numeric.float.monkyaml"
+            },
+            "5": {
+              "name": "constant.other.timestamp.monkyaml"
+            },
+            "6": {
+              "name": "constant.language.value.monkyaml"
+            },
+            "7": {
+              "name": "constant.language.merge.monkyaml"
+            }
+          },
+          "match": "(?x)\n                        (?x:\n                              (null|Null|NULL|~)\n                            | (y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)\n                            | (\n                                (?:\n                                      [-+]? 0b [0-1_]+ # (base 2)\n                                    | [-+]? 0  [0-7_]+ # (base 8)\n                                    | [-+]? (?: 0|[1-9][0-9_]*) # (base 10)\n                                    | [-+]? 0x [0-9a-fA-F_]+ # (base 16)\n                                    | [-+]? [1-9] [0-9_]* (?: :[0-5]?[0-9])+ # (base 60)\n                                )\n                              )\n                            | (\n                                (?x:\n                                      [-+]? (?: [0-9] [0-9_]*)? \\. [0-9.]* (?: [eE] [-+] [0-9]+)? # (base 10)\n                                    | [-+]? [0-9] [0-9_]* (?: :[0-5]?[0-9])+ \\. [0-9_]* # (base 60)\n                                    | [-+]? \\. (?: inf|Inf|INF) # (infinity)\n                                    |       \\. (?: nan|NaN|NAN) # (not a number)\n                                )\n                              )\n                            | (\n                                (?x:\n                                    \\d{4} - \\d{2} - \\d{2}           # (y-m-d)\n                                  | \\d{4}                           # (year)\n                                    - \\d{1,2}                       # (month)\n                                    - \\d{1,2}                       # (day)\n                                    (?: [Tt] | [ \\t]+) \\d{1,2}      # (hour)\n                                    : \\d{2}                         # (minute)\n                                    : \\d{2}                         # (second)\n                                    (?: \\.\\d*)?                     # (fraction)\n                                    (?:\n                                          (?:[ \\t]*) Z\n                                        | [-+] \\d{1,2} (?: :\\d{1,2})?\n                                    )?                              # (time zone)\n                                )\n                              )\n                            | (=)\n                            | (<<)\n                        )\n                        (?x:\n                            (?=\n                                  \\s* $\n                                | \\s+ \\#\n                                | \\s* : (\\s|$)\n                            )\n                        )\n                    "
+        }
+      ]
+    },
+    "flow-scalar-single-quoted": {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.monkyaml"
+        }
+      },
+      "end": "'(?!')",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.monkyaml"
+        }
+      },
+      "name": "string.quoted.single.monkyaml",
+      "patterns": [
+        {
+          "match": "''",
+          "name": "constant.character.escape.single-quoted.monkyaml"
+        }
+      ]
+    },
+    "flow-sequence": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.sequence.begin.monkyaml"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.sequence.end.monkyaml"
+        }
+      },
+      "name": "meta.flow-sequence.monkyaml",
+      "patterns": [
+        {
+          "include": "#prototype"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.sequence.monkyaml"
+        },
+        {
+          "include": "#flow-pair"
+        },
+        {
+          "include": "#flow-node"
+        }
+      ]
+    },
+    "flow-value": {
+      "patterns": [
+        {
+          "begin": "\\G(?![},\\]])",
+          "end": "(?=[},\\]])",
+          "name": "meta.flow-pair.value.monkyaml",
+          "patterns": [
+            {
+              "include": "#flow-node"
+            }
+          ]
+        }
+      ]
+    },
+    "node": {
+      "patterns": [
+        {
+          "include": "#block-node"
+        }
+      ]
+    },
+    "property": {
+      "begin": "(?=!|&)",
+      "end": "(?!\\G)",
+      "name": "meta.property.monkyaml",
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.control.property.anchor.monkyaml"
+            },
+            "2": {
+              "name": "punctuation.definition.anchor.monkyaml"
+            },
+            "3": {
+              "name": "entity.name.type.anchor.monkyaml"
+            },
+            "4": {
+              "name": "invalid.illegal.character.anchor.monkyaml"
+            }
+          },
+          "match": "\\G((&))([^\\s\\[\\]/{/},]+)(\\S+)?"
+        },
+        {
+          "match": "(?x)\n                        \\G\n                        (?:\n                            ! < (?: %[0-9A-Fa-f]{2} | [0-9A-Za-z\\-#;/?:@&=+$,_.!~*'()\\[\\]] )+ >\n                          | (?:!(?:[0-9A-Za-z\\-]*!)?) (?: %[0-9A-Fa-f]{2} | [0-9A-Za-z\\-#;/?:@&=+$_.~*'()] )+\n                          | !\n                        )\n                        (?=\\ |\\t|$)\n                    ",
+          "name": "storage.type.tag-handle.monkyaml"
+        },
+        {
+          "match": "\\S+",
+          "name": "invalid.illegal.tag-handle.monkyaml"
+        }
+      ]
+    },
+    "prototype": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#property"
+        }
+      ]
+    },
+    "arrowscript-code-inner": {
+      "patterns": [
+        {
+          "begin": "([\"'`])",
+          "beginCaptures": { "1": { "name": "string.quoted.double.monkyaml" } },
+          "end": "(\\1)",
+          "endCaptures": { "1": { "name": "string.quoted.double.monkyaml" } },
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.monkyaml"
+            },
+            {
+              "begin": "\\$\\{",
+              "end": "\\}",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.definition.template-expression.begin.monkyaml"
+                }
+              },
+              "endCaptures": {
+                "0": {
+                  "name": "punctuation.definition.template-expression.end.monkyaml"
+                }
+              },
+              "patterns": [
+                {
+                  "include": "#arrowscript-code-inner"
+                }
+              ],
+              "name": "variable.other.placeholder.monkyaml"
+            },
+            {
+              "match": ".",
+              "name": "string.quoted.double.monkyaml"
+            }
+          ]
+        },
+        {
+          "match": "\\$[a-zA-Z_?][\\w?-]*",
+          "name": "variable.name.arrowscript.monkyaml"
+        },
+        {
+          "match": "[a-zA-Z_?][\\w?-]*",
+          "name": "keyword.operator.name.arrowscript.monkyaml"
+        },
+        {
+          "match": "\\d+(?:\\.\\d+)?(?:(?:e|E)(?:\\+|-)?\\d+)?",
+          "name": "constant.numeric.float-or-integer.arrowscript.monkyaml"
+        },
+        {
+          "begin": "(<-)(?:\\((?:[a-zA-Z_?][\\w?-]*[ \\t]*,?)+\\))[ \\t]*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.type.tag-handle.monkyaml"
+            },
+            "2": {
+              "name": "variable.name.argument.arrowscript.monkyaml"
+            },
+            "4": {
+              "name": "punctuation.definition.arrowscript.function.begin.monkyaml"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.arrowscript.function.end.monkyaml"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#arrowscript-code-inner"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

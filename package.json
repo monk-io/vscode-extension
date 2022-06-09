@@ -1,0 +1,26 @@
+{
+    "name": "monk-yaml",
+    "displayName": "Monk YAML",
+    "description": "YAML used for monk kits",
+    "version": "0.1.0",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "publisher": "AnotherTest",
+    "contributes": {
+        "languages": [{
+            "id": "monk-yaml",
+            "aliases": ["Monk YAML", "monk-yaml"],
+            "extensions": [".yaml",".yml"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "monk-yaml",
+            "scopeName": "source.monkyaml",
+            "path": "./syntaxes/monk-yaml.tmLanguage.json"
+        }]
+    }
+}
