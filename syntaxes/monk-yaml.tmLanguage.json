@@ -98,6 +98,10 @@
               "include": "#flow-scalar-plain-out-implicit-type"
             },
             {
+              "match": "(defines|inherits):",
+              "name": "keyword.entity.name.monkyaml"
+            },
+            {
               "begin": "(?x)\n                                  [^\\s[-?:,\\[\\]{}#&*!|>'\"%@`]]\n                                | [?:-] \\S\n                            ",
               "beginCaptures": {
                 "0": {
