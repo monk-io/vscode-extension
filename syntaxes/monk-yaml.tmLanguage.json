@@ -637,10 +637,26 @@
     "arrowscript-code-inner": {
       "patterns": [
         {
-          "begin": "([\"'`])",
+          "begin": "([\"'])",
           "beginCaptures": { "1": { "name": "string.quoted.double.monkyaml" } },
           "end": "(\\1)",
           "endCaptures": { "1": { "name": "string.quoted.double.monkyaml" } },
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.monkyaml"
+            },
+            {
+              "match": ".",
+              "name": "string.quoted.double.monkyaml"
+            }
+          ]
+        },
+        {
+          "begin": "(`)",
+          "beginCaptures": { "1": { "name": "string.quoted.backquote.monkyaml" } },
+          "end": "(`)",
+          "endCaptures": { "1": { "name": "string.quoted.backquote.monkyaml" } },
           "patterns": [
             {
               "match": "\\\\.",
