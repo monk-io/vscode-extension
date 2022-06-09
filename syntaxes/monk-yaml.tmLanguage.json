@@ -672,8 +672,19 @@
           "name": "variable.name.arrowscript.monkyaml"
         },
         {
+          "begin": "([a-zA-Z_?][\\w?-]*)\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function.arrowscript.monkyaml"
+            }
+          },
+          "patterns": [{ "include": "#arrowscript-code-inner" }],
+          "name": "meta.function-call.arrowscript.monkyaml"
+        },
+        {
           "match": "[a-zA-Z_?][\\w?-]*",
-          "name": "keyword.operator.name.arrowscript.monkyaml"
+          "name": "entity.name.function.arrowscript.monkyaml"
         },
         {
           "match": "\\d+(?:\\.\\d+)?(?:(?:e|E)(?:\\+|-)?\\d+)?",
@@ -685,9 +696,6 @@
           "beginCaptures": {
             "1": {
               "name": "storage.type.tag-handle.monkyaml"
-            },
-            "2": {
-              "name": "variable.name.argument.arrowscript.monkyaml"
             },
             "4": {
               "name": "punctuation.definition.arrowscript.function.begin.monkyaml"
